@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tradutor Online</title>
+
+    <script type="importmap" async>
+        {
+          "imports": {
+            "@material/web/": "https://esm.run/@material/web/"
+          }
+        }
+    </script>
+    <script type="module" async>
+        import '@material/web/all.js';
+        import {styles as typescaleStyles} from '@material/web/typography/md-typescale-styles.js';
+
+        document.adoptedStyleSheets.push(typescaleStyles.styleSheet);
+    </script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
+
+        * {
+            font-family: 'JetBrains Mono', 'Comfortaa';
+        }
+
+        header {
+            background-color: #C0C0C0;
+            display: flex;
+            align-items: center;
+            box-shadow: 1px 1px 1px black;
+            justify-content: space-between;
+            padding: 20px;
+            padding-top: 0px;
+            padding-bottom: 0px;
+        }
+
+        body {
+            background-color: #D3D3D3;
+            padding: 0px;
+            margin: 0px;
+        }
+
+        .inputs {
+            display: flex;
+            margin: 20px;
+            gap: 10px;
+        }
+
+        .inputs .textarea {
+            flex: 1;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            resize: none;
+            height: 280px;
+            border: black;
+        }
+
+        .inputs label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .button {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+        }
+
+        @media (max-width: 600px) {
+            .button {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 10px;
+                padding: 10px;
+                flex-direction: column;
+            }
+        }
+
+        .button > .translate {
+            padding: 5px;
+            border-radius: 10px;
+        }
+
+        #opcoes {
+            padding: 5px;
+        }
+
+        .link {
+            text-decoration: none;
+            color: black;
+        }
+
+        .modalField {
+            padding: 20px;
+        }
+
+        .reproduzir {
+          bottom: 5px;
+          right: 5px;
+        }
+
+        .media {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+    </style>
+
+    <script async>
+        function openmodal() {
+            var element = document.getElementById("modal");
+            element.show();
+        }
+
+        function copiarTexto() {
+            var element = document.getElementById("traducao");
+            element.select();
+            document.execCommand("copy");
+        }
+    </script>
+</head>
+
+<body>
+    <header>
+        <h1>Tradutor Online</h1>
+        <md-filled-tonal-button type="button" onclick="openmodal()" class="button">Sobre</md-filled-tonal-button>
+        <md-dialog id="modal">
+            <div slot="headline" class="modalField">
+                Sobre o projeto
+            </div>
+            <form slot="content" id="form-id" method="dialog" class="modalField">
+                <strong>Projeto desenvolvido para a Disciplina de Sistemas Distribuidos.</strong> <br><br>
+                <strong>Grupo: </strong>Carol, Ezequiel, Samuel, Kamila <br>
+                <strong>Professor: </strong>Gustavo Abreu
+            </form>
+            <div slot="actions">
+                <md-text-button form="form-id" class="modalField">Fechar</md-text-button>
+            </div>
+        </md-dialog>
+    </header>
+
+    <form action="/translate" method="post">
+        <div class="inputs">
+            <md-filled-text-field value="{{text}}" class="textarea" type="textarea" id="texto" name="texto" placeholder="Digite seu texto aqui" required>{{text}}</md-filled-text-field>
+            <md-filled-text-field value="{{resultado}}" class="textarea" type="textarea" id="traducao" name="traducao" placeholder="Tradução" readonly>{{resultado}}</md-filled-text-field>
+        </div>
+        <div class="button">
+            <md-outlined-select name="opcao" id="opcoes" required>
+                {% if opcao == None %}
+                    <md-select-option disabled selected hidden>Escolha a tradução de destino</md-select-option>
+                {% else %}
+                    <md-select-option disabled hidden>Escolha a tradução de destino</md-select-option>
+                {% endif %}
+                {% for item in array %}
+                    <md-select-option value="{{item}}">
+                        <div slot="headline">{{item}}</div>
+                    </md-select-option>
+                {% endfor %}
+                {% if opcao != None %}
+                    <md-select-option value="{{opcao}}" selected>
+                        <div slot="headline">{{opcao}}</div>
+                    </md-select-option>
+                {% endif %}
+            </md-outlined-select>
+            <md-elevated-button type="submit" class="button">Traduzir</md-elevated-button>
+            <md-filled-tonal-button type="button" onclick="copiarTexto()" class="button">Copiar Tradução</md-filled-tonal-button>
+        </div>
+    </form>
+</body>
+
+</html>
